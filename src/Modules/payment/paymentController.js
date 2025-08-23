@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import Stripe from "stripe";
-import Payment from "../../../DataBase/models/paymentModel.js";
+import Payment from "../../DataBase/models/paymentModel.js";
 import mongoose from "mongoose";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const createPayment = async (req, res, next) => {
