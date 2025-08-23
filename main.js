@@ -1,9 +1,9 @@
 import express from "express";
 import paymentRouter from "./src/Modules/payment/paymentRoutes.js";
 import dotenv from "dotenv";
-import connectDB from "./DataBase/db_connection.js";
-import { GlobalHandling } from "./src/utils/globalMiddelwareHandling.js";
-import { AppError } from "./src/utils/CreateError.js";
+import connectDB from "./src/DataBase/db_connection.js";
+import { GlobalHandling } from "./src/utils/error-handling/globalMiddelwareHandling.js";
+import { AppError } from "./src/utils/error-handling/CreateError.js";
 dotenv.config();
 const post = process.env.PORT || 4000
 const app = express();
@@ -17,6 +17,6 @@ app.use((req, res, next) => {
 //handel all error
 app.use(GlobalHandling)
     app.listen(post, () => {
-        console.log("Server is running on port 3000");
+        console.log("Server is running on port 4000");
     });
 
