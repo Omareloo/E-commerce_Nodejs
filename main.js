@@ -4,19 +4,28 @@ import dotenv from "dotenv";
 import connectDB from "./DataBase/db_connection.js";
 import { GlobalHandling } from "./src/utils/globalMiddelwareHandling.js";
 import { AppError } from "./src/utils/CreateError.js";
+import categoryRouter from "./src/Modules/categories/categoryRoutes.js";
+import morgan from "morgan";
+import subcategoryRouter from "./src/Modules/subCategories/subCategories.router.js";
+import BrandRouter from "./src/Modules/Brand/Brand,router.js";
+import productRouter from "./src/Modules/product/product.routes.js";
 dotenv.config();
-const post = process.env.PORT || 4000
+const post = process.env.PORT || 4000;
 const app = express();
-connectDB()
-    app.use(express.json());
-    app.use(`${process.env.BASEURL}/payments`, paymentRouter);
+connectDB();
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(`${process.env.BASEURL}/Categories`, categoryRouter);
+app.use(`${process.env.BASEURL}/subCategories`, subcategoryRouter);
+app.use(`${process.env.BASEURL}/Brands`, BrandRouter);
+app.use(`${process.env.BASEURL}/Products`, productRouter);
+app.use(`${process.env.BASEURL}/payments`, paymentRouter);
+
 app.use((req, res, next) => {
   next(new AppError("Invalid URL: " + req.originalUrl, 404));
 });
-
 //handel all error
-app.use(GlobalHandling)
-    app.listen(post, () => {
-        console.log("Server is running on port 3000");
-    });
-
+app.use(GlobalHandling);
+app.listen(post, () => {
+  console.log("Server is running on port 3000");
+});
