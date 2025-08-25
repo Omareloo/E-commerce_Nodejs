@@ -1,4 +1,5 @@
 import express from "express";
+import authRouter from "./src/Modules/Auth/auth.routes.js";
 import paymentRouter from "./src/Modules/payment/paymentRoutes.js";
 import dotenv from "dotenv";
 import connectDB from "./DataBase/db_connection.js";
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/auth", authRouter);
 
 app.use(`${process.env.BASEURL}/Categories`, categoryRouter);
 app.use(`${process.env.BASEURL}/subCategories`, subcategoryRouter);
