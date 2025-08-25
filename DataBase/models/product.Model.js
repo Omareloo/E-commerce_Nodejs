@@ -14,33 +14,7 @@ const productSchema = new mongoose.Schema(
       min: 0,
       required: [true, "price is required"],
     },
-    priceAfterDiscount: {
-      type: Number,
-      min: 0,
-    },
-    ratingAvg: {
-      type: Number,
-      min: [1, "rate must be greater than 1"],
-      max: [5, "rate must be lower than 5"],
-    },
-    ratingCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    quantity: {
-      type: Number,
-      default: 0,
-      min: 0,
-      required: [true, "quantity is required"],
-    },
-    sold: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    imageCover: String,
-    images: [String],
+    image: String,
     description: {
       type:String,
       required: [true, "description is required"],

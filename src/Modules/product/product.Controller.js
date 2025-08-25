@@ -2,17 +2,20 @@ import poductModel from "../../../DataBase/models/product.Model.js";
 import { AppError } from "../../utils/CreateError.js";
 import CatchError from "./../../utils/CatchAyncError.js";
 import slugify from "slugify";
-//pagination
-//filtration
-//sort
-//search
-//select fileds
+
 const addproduct = CatchError(async (req, res, next) => {
   req.body.slug = slugify(req.body.title);
+  if (req.file) {
+    req.body.image = req.file.filename;
+  } else {
+    return next(new AppError("Product image is required"));
+  }
   const result = new poductModel(req.body);
   await result.save();
-  res.json({ message: "add", result });
+  res.status(201).json({ message: "Product added successfully", result });
 });
+
+
 const getproducts = CatchError(async (req, res, next) => {
   // ضربناها فى 1 علشان تتحول لرقم علشان هى استرنج
 
@@ -37,6 +40,7 @@ const getproducts = CatchError(async (req, res, next) => {
     exctionQuary = exctionQuary.sort(req.query.sort);
   }
   if (req.query.keyword) {
+
     exctionQuary = exctionQuary.find({
       $or: [
         //regex علشان يبحث ف النصوص
