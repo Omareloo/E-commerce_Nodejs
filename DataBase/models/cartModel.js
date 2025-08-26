@@ -4,7 +4,7 @@ const cartSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: [true, "User is required"],
         unique: true
     },
     items: [
@@ -12,12 +12,12 @@ const cartSchema = new mongoose.Schema({
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
-                required: true
+                required: [true, "Product is required"]
             },
             quantity: {
                 type: Number,
                 default: 1,
-                min: 1
+                min: [1, "Quantity must be at least 1"]
             }
         }
     ]

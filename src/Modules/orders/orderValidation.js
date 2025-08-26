@@ -6,38 +6,20 @@ const orderValidationSchema = Joi.object({
         "string.min": "Shipping address must be at least 5 characters long"
     }),
 
-    items: Joi.array().items(
-        Joi.object({
-            productId: Joi.string()
-                .regex(/^[0-9a-fA-F]{24}$/)
-                .required()
-                .messages({
-                    "string.pattern.base": "Invalid productId format",
-                    "string.empty": "ProductId is required"
-                }),
-            quantity: Joi.number().integer().min(1).required().messages({
-                "number.base": "Quantity must be a number",
-                "number.min": "Quantity must be at least 1",
-                "any.required": "Quantity is required"
-            }),
-            price: Joi.number().min(0).required().messages({
-                "number.base": "Price must be a number",
-                "number.min": "Price cannot be negative",
-                "any.required": "Price is required"
-            })
+    items: Joi.forbidden().messages({
+        "any.unknown": "You cannot provide items manually, they will be taken from your cart"
+    }),
+
+    totalPrice: Joi.forbidden().messages({
+        "any.unknown": "You cannot provide totalPrice manually, it will be calculated automatically"
+    }),
+
+    status: Joi.string()
+        .valid("pending", "shipped", "delivered", "canceled")
+        .default("pending")
+        .messages({
+            "any.only": "Status must be one of: pending, shipped, delivered, canceled"
         })
-    ).min(1).required().messages({
-        "array.min": "Order must have at least one item",
-        "array.base": "Items must be an array"
-    }),
-
-    totalPrice: Joi.number().min(0).required().messages({
-        "number.base": "Total price must be a number",
-        "number.min": "Total price cannot be negative",
-        "any.required": "Total price is required"
-    }),
-
-    status: Joi.string().valid("pending", "shipped", "delivered", "canceled").default("pending")
 });
 
 export default orderValidationSchema;
