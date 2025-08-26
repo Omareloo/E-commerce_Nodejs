@@ -1,13 +1,16 @@
-import Order from "../../../DataBase/models/orderModel";
-import Cart from "../../../DataBase/models/cartModel";
-import CatchError from "../../utils/CatchAyncError";
+import Order from "../../../DataBase/models/orderModel.js";
+import Cart from "../../../DataBase/models/cartModel.js";
+import CatchError from "../../utils/CatchAyncError.js";
+import { AppError } from "../../utils/CreateError.js";
+
+
 // user
-export const createOrder = CatchError(async (req, res) => {
+export const createOrder = CatchError(async (req, res, next) => {
     const userId = req.user.id;
     const { shippingAddress } = req.body;
 
     const cart = await Cart.findOne({ userId }).populate("items.productId", "price");
-    if (!cart || cart.items.length === 0) return res.status(400).json({ message: "Cart is empty" });
+    if (!cart || cart.items.length === 0) return next(new AppError("Cart is empty", 400));
 
     const items = cart.items.map(item => ({
         productId: item.productId._id,
@@ -32,14 +35,14 @@ export const getUserOrders = CatchError(async (req, res) => {
 });
 
 // user
-export const cancelOrder = CatchError(async (req, res) => {
+export const cancelOrder = CatchError(async (req, res, next) => {
     const { orderId } = req.params;
     const userId = req.user.id;
 
     const order = await Order.findOne({ _id: orderId, userId });
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) return next(new AppError("Order not found", 404));
 
-    if (order.status !== "pending") { return res.status(400).json({ message: "You can only cancel pending orders" }); }
+    if (order.status !== "pending") { return next(new AppError("You can only cancel pending orders", 400)); }
 
     order.status = "canceled";
     await order.save();
@@ -66,12 +69,12 @@ export const getAllOrders = CatchError(async (req, res) => {
 });
 
 // admin
-export const updateOrderStatus = CatchError(async (req, res) => {
+export const updateOrderStatus = CatchError(async (req, res, next) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
     const order = await Order.findById(orderId);
-    if (!order) return res.status(404).json({ message: "Order not found" });
+    if (!order) return next(new AppError("Order not found", 404));
 
     order.status = status;
     await order.save();
