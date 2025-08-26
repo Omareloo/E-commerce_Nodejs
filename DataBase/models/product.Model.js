@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema(
     },
     image: String,
     description: {
-      type:String,
+      type: String,
       required: [true, "description is required"],
       trim: true,
       minLength: [2, "this description is short"],
