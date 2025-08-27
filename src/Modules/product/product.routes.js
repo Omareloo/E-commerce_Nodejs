@@ -1,7 +1,7 @@
 import express from "express";
 import * as product from "./product.Controller.js";
 import { upload } from "../../MiddleWare/Multer.js";
-import { authuntcation } from "../../MiddleWare/auth.middleware.js";
+import { authuntcation,AllowTo } from "../../MiddleWare/auth.middleware.js";
 const productRouter = express.Router();
 productRouter
   .route("/")
