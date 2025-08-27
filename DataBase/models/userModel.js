@@ -1,5 +1,6 @@
 import mongoose ,{Schema} from "mongoose";
 import { rolesType } from "../../src/MiddleWare/auth.middleware.js"
+ 
 const userSchema = new Schema ({
     userName:{
         type:String, 
@@ -34,7 +35,7 @@ const userSchema = new Schema ({
         }
     },
     confirmEmail:{
-        type:String, 
+        type:Boolean, 
         default :false,
         
     },
@@ -47,6 +48,7 @@ const userSchema = new Schema ({
      adress:String,
      phoneNumber:String,
      image:String,
+     changedAt:Date,
 
 },
 { timestamps: true }
