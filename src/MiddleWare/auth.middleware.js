@@ -31,9 +31,16 @@ export const authuntcation =async(req,res, next)=>{
     if(!decoded?.id){
       return next(new Error("Invalid payload",{cause:500}));
     }
-    const user =await UserModel.findById(decoded.id).select("-password")
+    // const user =await UserModel.findById(decoded.id).select("-password")
+        const user =await UserModel.findById(decoded.id) 
+
     if(!user){
      return next(new Error("Register first",{cause:404}));
+    }
+    if (user?.changedAt && decoded?.iat) {
+      if (user.changedAt.getTime() > decoded.iat * 1000) {
+        return next(new Error("Token expired, please login again", { cause: 401 }));
+      }
     }
     req.user=user
 return next()
