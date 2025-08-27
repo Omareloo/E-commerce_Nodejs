@@ -12,6 +12,8 @@ import subcategoryRouter from "./src/Modules/subCategories/subCategories.router.
 import BrandRouter from "./src/Modules/Brand/Brand,router.js";
 import productRouter from "./src/Modules/product/product.routes.js";
 import path from "path";
+import orderRouter from "./src/Modules/orders/ordersRoute.js";
+import cartRouter from "./src/Modules/cart/cartRoute.js";
 
 dotenv.config();
 const port = process.env.PORT || 4000;
@@ -29,6 +31,8 @@ app.use(`${process.env.BASEURL}/subCategories`, subcategoryRouter);
 app.use(`${process.env.BASEURL}/Brands`, BrandRouter);
 app.use(`${process.env.BASEURL}/Products`, productRouter);
 app.use(`${process.env.BASEURL}/payments`, paymentRouter);
+app.use(`${process.env.BASEURL}/cart`, cartRouter);
+app.use(`${process.env.BASEURL}/order`, orderRouter);
 
 app.use((req, res, next) => {
   next(new AppError("Invalid URL: " + req.originalUrl, 404));
