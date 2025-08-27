@@ -7,8 +7,7 @@ const paymentRouter = express.Router();
 
 paymentRouter.post("/create", authuntcation, createPayment);
 
-
-paymentRouter.post("/confirm", confirmPayment);
+paymentRouter.post("/confirm", authuntcation, confirmPayment);
 
 paymentRouter.post("/webhook", bodyParser.raw({ type: "application/json" }), handleWebhook);
 
