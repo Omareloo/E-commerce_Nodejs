@@ -4,23 +4,24 @@ import CryptoJS  from "crypto-js"
 import jwt from"jsonwebtoken"
 import { rolesType } from "../../MiddleWare/auth.middleware.js"
 import { emailEmitter } from "../../utils/email/emailEvents.js"; 
-import { asyncHandler } from "../../utils/error-handling/Asynchandler.js"
-import { encrypt } from "../../utils/encryption/encryption.js"
+ import { encrypt } from "../../utils/encryption/encryption.js"
 import { generateToken, verifyToken } from "../../utils/token/token.js"
 import { hashing ,compare} from "../../utils/hashing/hashing.js"
+import CatchError from "../../utils/CatchAyncError.js"
+import { AppError } from "../../utils/CreateError.js"
  
 
-export const register =asyncHandler(async(req,res,next)=>{
+export const register =CatchError(async(req,res,next)=>{
   
 const{userName,email,password,confirmpassword,phoneNumber,role}=req.body
 if(password!==confirmpassword){
-   return next(new Error("password doesnt match",{cause:404}));
+   return next(new AppError("password doesnt match",404));
 }
 
 
 const checkEmail =await UserModel.findOne({email})
 if(checkEmail){
-   return next(new Error("this mail is already exist",{cause:409}));
+   return next(new AppError("this mail is already exist",409));
 }
 
 
@@ -35,22 +36,22 @@ emailEmitter.emit("sendEmail",user.userName,user.email)
   
 }) 
 
-export const login =asyncHandler(async(req,res,next)=>{
+export const login =CatchError(async(req,res,next)=>{
     
 const{ email,password}=req.body
  
 const user =await UserModel.findOne({email})
 if(!user)
  {
-   return  next(new Error("this user is not exist!",{cause:404}));
+   return  next(new AppError("this user is not exist!",404));
 }  
 if(user.confirmEmail===false){
- return next(new Error("please confirm your Email",{cause:404})); 
+ return next(new AppError("please confirm your Email",404)); 
 } 
 const matchpassword =compare({plainText:password ,hash:user.password})
 
 if(!matchpassword){
- return  next(new Error("this password is not correct ",{cause:404}));
+ return  next(new AppError("this password is not correct ",404));
 }
 
 const token = generateToken({payload:{ id:user.id, isloggedIn:true},
@@ -71,7 +72,7 @@ export const activate_account=async(req,res,next)=>{
       const {email} =verifyToken({token:token ,signature:process.env.TOKEN_SECRET_EMAIL})
       const user =await UserModel.findOne({email})
       if(!user){
-         return  next(new Error("this user is not exist",{cause:404}));
+         return  next(new AppError("this user is not exist", 404));
       }
       user.confirmEmail=true
       await user.save();
