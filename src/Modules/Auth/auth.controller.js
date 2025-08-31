@@ -7,7 +7,7 @@ import { emailEmitter } from "../../utils/email/emailEvents.js";
  import { encrypt } from "../../utils/encryption/encryption.js"
 import { generateToken, verifyToken } from "../../utils/token/token.js"
 import { hashing ,compare} from "../../utils/hashing/hashing.js"
-import CatchError from "../../utils/CatchAyncError.js"
+import CatchError from "../../utils/CatchAyncError.js" 
 import { AppError } from "../../utils/CreateError.js"
  
 
@@ -18,17 +18,14 @@ if(password!==confirmpassword){
    return next(new AppError("password doesnt match",404));
 }
 
-
 const checkEmail =await UserModel.findOne({email})
 if(checkEmail){
    return next(new AppError("this mail is already exist",409));
 }
 
-
 const hashpassword= hashing({plainText:password , saltRound:process.env.SALT})
 const encryptphone=encrypt({plainText:phoneNumber,signature:process.env.Encryption_Secret})
  
-
 const user = await UserModel.create({userName,email,password:hashpassword ,phoneNumber:encryptphone,role})
 emailEmitter.emit("sendEmail",user.userName,user.email)
     return res.status(201)

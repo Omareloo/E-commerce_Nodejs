@@ -11,7 +11,7 @@ const addCategory = CatchError(async (req, res, next) => {
 const getCategories = CatchError(async (req, res, next) => {
   const Categories = await categoryModel.find();
   if (Categories.length === 0)
-    return next(new AppError("thier are no categoreis yet"));
+    return next(new AppError("thier are no categoreis yet",400));
   res.json({ message: "Success", Categories });
 });
 const getCategoryByID = CatchError(async (req, res, next) => {
