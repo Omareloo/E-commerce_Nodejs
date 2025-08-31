@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Joi from "joi";
 import { rolesType } from "./auth.middleware.js"
 import orderValidationSchema from "../Modules/orders/orderValidation.js";
+import { AppError } from "../utils/CreateError.js";
 
 export const validation = (schema) => {
   return (req, res, next) => {
@@ -23,7 +24,7 @@ export const validation1 = (schema) => {
     const results = schema.validate(data, { abortEarly: false });
     if (results.error) {
       const errorMessage = results.error.details.map((obj) => obj.message)
-      return next(new Error(errorMessage, { cause: 400 }));
+      return next(new AppError(errorMessage, 400));
     }
     return next()
   };

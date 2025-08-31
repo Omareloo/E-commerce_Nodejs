@@ -1,17 +1,19 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../../DataBase/models/userModel.js";
 import { verifyToken } from "../utils/token/token.js";
+import CatchError from "../utils/CatchAyncError.js";
+import { AppError } from "../utils/CreateError.js";
 
 export const  rolesType ={
   User:"User",
   Admin:"Admin",
 };
 
-export const authuntcation =async(req,res, next)=>{
-  try {
+export const authuntcation = CatchError(async(req,res, next)=>{
+   
     const { authorization } = req.headers;
     if(!authorization){
-        return next(new Error("unauthorized",{cause:401}));
+         return next(new AppError("unauthorized",401));
     }
   const[Bearer,token]=authorization.split(" ")
   let TOKEN_SIGNATURE = undefined ;
@@ -29,31 +31,30 @@ export const authuntcation =async(req,res, next)=>{
   
     const decoded=verifyToken({token:token,signature:TOKEN_SIGNATURE}) 
     if(!decoded?.id){
-      return next(new Error("Invalid payload",{cause:500}));
+ 
+      return next(new AppError("Invalid payload",500));
     }
     // const user =await UserModel.findById(decoded.id).select("-password")
         const user =await UserModel.findById(decoded.id) 
 
     if(!user){
-     return next(new Error("Register first",{cause:404}));
+     return next(new AppError("Register first",404));
     }
     if (user?.changedAt && decoded?.iat) {
       if (user.changedAt.getTime() > decoded.iat * 1000) {
-        return next(new Error("Token expired, please login again", { cause: 401 }));
+        return next(new AppError("Token expired, please login again", 401));
       }
     }
     req.user=user
 return next()
-  } catch (error) {
-    return next(error);
-  }
+   
 }
-
+)
 export const AllowTo=(roles=[])=>{
   return async(req,res,next)=>{
     try {
       if(!roles.includes(req.user.role))
-        return next(new Error("forbidden Account",{cause:403}));
+        return next(new AppError("forbidden Account",403));
       return next()
     } catch (error) {
       return next(error)

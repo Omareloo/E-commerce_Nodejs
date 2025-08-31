@@ -3,6 +3,7 @@ import { EventEmitter } from  "events";
 import sendEmail, { subject } from "./sendEmail.js";
 import { signUp } from "./generateHTML.js";
 import { generateToken } from "../token/token.js";
+import { AppError } from "../CreateError.js";
  
 
   export const emailEmitter = new EventEmitter();
@@ -13,7 +14,7 @@ import { generateToken } from "../token/token.js";
   const isSent=await sendEmail({to:email,subject:subject.register,html:signUp(link,userName)})
    
   
- if (!isSent) throw new Error("Email Not Sent");
+ if (!isSent) throw new AppError("Email Not Sent");
   })
 
  
