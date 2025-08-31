@@ -4,7 +4,7 @@ import { generalField } from "../../MiddleWare/validation.js";
 
 export const updateProfileSchema=joi.object({
     userName:generalField.userName,
-    email:generalField.email,
+
     phone:generalField.phoneNumber
 }).required();
 
