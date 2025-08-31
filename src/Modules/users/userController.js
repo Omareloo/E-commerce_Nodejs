@@ -3,8 +3,7 @@ import jwt from"jsonwebtoken"
 import CryptoJS  from "crypto-js"
  import { compare, hashing } from "../../utils/hashing/hashing.js"
 import { decrypt } from "../../utils/encryption/encryption.js"
-import { hash } from "bcrypt"
-import { AppError } from "../../utils/CreateError.js"
+ import { AppError } from "../../utils/CreateError.js"
 export const getprofile =async(req,res,next)=>{
     
       const{user}=req
