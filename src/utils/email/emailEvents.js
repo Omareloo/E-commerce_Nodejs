@@ -10,11 +10,9 @@ import { AppError } from "../CreateError.js";
  
   emailEmitter.on("sendEmail",async(userName,email)=>{
   const token =generateToken({payload:{email},signature:process.env.TOKEN_SECRET_EMAIL})
-  const link = `http://localhost:3000/auth/activate_account/${token}`;
+  const link = `http://localhost:3000/api/v1/auth/activate_account/${token}`;
   const isSent=await sendEmail({to:email,subject:subject.register,html:signUp(link,userName)})
    
   
  if (!isSent) throw new AppError("Email Not Sent");
   })
-
- 
