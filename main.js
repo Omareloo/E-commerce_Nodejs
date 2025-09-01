@@ -16,9 +16,7 @@ dotenv.config();
 const port = process.env.PORT || 4000;
 const app = express();
 connectDB();
-
 app.use(express.json());
-
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(`${process.env.BASEURL}/auth`, authRouter);
 app.use(`${process.env.BASEURL}/user`, userRouter);
@@ -28,7 +26,6 @@ app.use(`${process.env.BASEURL}/Products`, productRouter);
 app.use(`${process.env.BASEURL}/payments`, paymentRouter);
 app.use(`${process.env.BASEURL}/cart`, cartRouter);
 app.use(`${process.env.BASEURL}/order`, orderRouter);
-
 app.use((req, res, next) => {
   next(new AppError("Invalid URL: " + req.originalUrl, 404));
 });

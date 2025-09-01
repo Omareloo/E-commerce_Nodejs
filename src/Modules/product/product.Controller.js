@@ -2,7 +2,6 @@ import poductModel from "../../../DataBase/models/product.Model.js";
 import { AppError } from "../../utils/CreateError.js";
 import CatchError from "./../../utils/CatchAyncError.js";
 import slugify from "slugify";
-
 const addproduct = CatchError(async (req, res, next) => {
   req.body.slug = slugify(req.body.title);
   if (req.file) {
@@ -14,8 +13,6 @@ const addproduct = CatchError(async (req, res, next) => {
   await result.save();
   res.status(201).json({ message: "Product added successfully", result });
 });
-
-
 const getproducts = CatchError(async (req, res, next) => {
   // ضربناها فى 1 علشان تتحول لرقم علشان هى استرنج
 
