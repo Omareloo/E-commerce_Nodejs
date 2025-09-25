@@ -1,23 +1,24 @@
-import express from "express";
-import authRouter from "./src/Modules/Auth/auth.routes.js";
-import userRouter from"./src/Modules/users/userRoutes.js"
-import paymentRouter from "./src/Modules/payment/paymentRoutes.js";
-import dotenv from "dotenv";
-import connectDB from "./DataBase/db_connection.js";
-import { GlobalHandling } from "./src/utils/globalMiddelwareHandling.js";
-import { AppError } from "./src/utils/CreateError.js";
-import categoryRouter from "./src/Modules/categories/categoryRoutes.js";
-import subcategoryRouter from "./src/Modules/subCategories/subCategories.router.js";
-import productRouter from "./src/Modules/product/product.routes.js";
-import path from "path";
-import orderRouter from "./src/Modules/orders/ordersRoute.js";
-import cartRouter from "./src/Modules/cart/cartRoute.js";
+import express from 'express';
+import authRouter from './src/Modules/Auth/auth.routes.js';
+import userRouter from './src/Modules/users/userRoutes.js';
+import paymentRouter from './src/Modules/payment/paymentRoutes.js';
+import dotenv from 'dotenv';
+import connectDB from './DataBase/db_connection.js';
+import { GlobalHandling } from './src/utils/globalMiddelwareHandling.js';
+import { AppError } from './src/utils/CreateError.js';
+import categoryRouter from './src/Modules/categories/categoryRoutes.js';
+import subcategoryRouter from './src/Modules/subCategories/subCategories.router.js';
+import productRouter from './src/Modules/product/product.routes.js';
+import path from 'path';
+import orderRouter from './src/Modules/orders/ordersRoute.js';
+import cartRouter from './src/Modules/cart/cartRoute.js';
+import wishlistRouter from './src/Modules/wishlist/wishlistRoute.js';
 dotenv.config();
 const port = process.env.PORT || 4000;
 const app = express();
 connectDB();
 app.use(express.json());
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(`${process.env.BASEURL}/auth`, authRouter);
 app.use(`${process.env.BASEURL}/user`, userRouter);
 app.use(`${process.env.BASEURL}/Categories`, categoryRouter);
@@ -26,8 +27,10 @@ app.use(`${process.env.BASEURL}/Products`, productRouter);
 app.use(`${process.env.BASEURL}/payments`, paymentRouter);
 app.use(`${process.env.BASEURL}/cart`, cartRouter);
 app.use(`${process.env.BASEURL}/order`, orderRouter);
+app.use(`${process.env.BASEURL}/wishlist`, wishlistRouter);
+
 app.use((req, res, next) => {
-  next(new AppError("Invalid URL: " + req.originalUrl, 404));
+  next(new AppError('Invalid URL: ' + req.originalUrl, 404));
 });
 app.use(GlobalHandling);
 
