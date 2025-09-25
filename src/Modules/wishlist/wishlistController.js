@@ -1,7 +1,7 @@
-import productModel from '../../../DataBase/models/product.Model';
-import Wishlist from '../../../DataBase/models/wishlistModel';
-import CatchError from '../../utils/CatchAyncError';
-import { AppError } from '../../utils/CreateError';
+import productModel from '../../../DataBase/models/product.Model.js';
+import Wishlist from '../../../DataBase/models/wishlistModel.js';
+import CatchError from '../../utils/CatchAyncError.js';
+import { AppError } from '../../utils/CreateError.js';
 
 // add product to wishlist
 export const addToWishlist = CatchError(async (req, res, next) => {
