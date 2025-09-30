@@ -51,13 +51,13 @@ if(!matchpassword){
  return  next(new AppError("this password is not correct ",404));
 }
 
-const token = generateToken({payload:{ id:user.id, isloggedIn:true},
+const token = generateToken({payload:{ id:user.id, isloggedIn:true , role: user.role},
                              signature: user.role === rolesType.User?
  process.env.TOKEN_SECRET_USER:process.env.TOKEN_SECRET_ADMIN ,
   options:{ expiresIn: 60 * 60 }})
-
+const role =user.role
 return res.status(201)
-    .json({success:true,message:"Done  ",token})
+    .json({success:true,message:"Done  ",token,role})
  
 }) 
 
