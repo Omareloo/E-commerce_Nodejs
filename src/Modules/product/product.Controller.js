@@ -13,51 +13,67 @@ const addproduct = CatchError(async (req, res, next) => {
   await result.save();
   res.status(201).json({ message: "Product added successfully", result });
 });
-const getproducts = CatchError(async (req, res, next) => {
-  // ضربناها فى 1 علشان تتحول لرقم علشان هى استرنج
 
-  /// pagination
+
+
+
+const getproducts = CatchError(async (req, res, next) => {
+  // pagination
   let page = req.query.page * 1 || 1;
   let limit = 5;
   if (req.query.page <= 0) {
     page = 1;
   }
-  let skip = (page - 1) * 5;
+  let skip = (page - 1) * limit;
+
   // filteration
   let filter = { ...req.query };
   let optionDelete = ["sort", "page", "keyword", "fields"];
   optionDelete.forEach((item) => {
     delete filter[item];
   });
-  //bulid quary
-  // sort الاكثر مبيعا
-  //search by keyword
+
+  // build query
   let exctionQuary = poductModel.find(filter).skip(skip).limit(limit);
+
+  // sort
   if (req.query.sort) {
     exctionQuary = exctionQuary.sort(req.query.sort);
   }
-  if (req.query.keyword) {
 
+  // search by keyword
+  if (req.query.keyword) {
     exctionQuary = exctionQuary.find({
       $or: [
-        //regex علشان يبحث ف النصوص
-        // options no senstive
         { title: { $regex: req.query.keyword, $options: "i" } },
         { description: { $regex: req.query.keyword, $options: "i" } },
       ],
     });
   }
-  //select fields
+
+  // select fields
   if (req.query.fields) {
     let fields = req.query.fields.split(",").join(" ");
     exctionQuary = exctionQuary.select(fields);
   }
-  //excute quary
+
+
+exctionQuary = exctionQuary
+  .populate("Catergory", "name")      
+
+
+  // execute query
   const results = await exctionQuary;
-  if (results.length === 0)
-    return next(new AppError("thier are no products yet"));
+  if (results.length === 0) {
+    return next(new AppError("There are no products yet", 404));
+  }
+
   res.json({ message: "Success", page, limit, results });
 });
+
+
+
+
 const getproductByID = CatchError(async (req, res, next) => {
   const { id } = req.params;
   const results = await poductModel.findById(id);
