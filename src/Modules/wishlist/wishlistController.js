@@ -24,7 +24,7 @@ export const addToWishlist = CatchError(async (req, res, next) => {
 export const getUserWishlist = CatchError(async (req, res, next) => {
   const wishlist = await Wishlist.findOne({ userId: req.user.id }).populate(
     'items.productId',
-    'name price'
+    'title price image'
   );
   if (!wishlist) return next(new AppError('Wishlist not found', 404));
   res.json({ wishlist });
