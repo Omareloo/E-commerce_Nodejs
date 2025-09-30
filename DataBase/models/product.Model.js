@@ -23,14 +23,14 @@ const productSchema = new mongoose.Schema(
       maxLength: [300, "this description  must be lower than 300"],
       unique: [true, "this description must be unique"],
     },
-    Catergory: {
+    Category: {
       type: mongoose.Types.ObjectId,
       ref: "Category",
       required: [true, "category id is required"],
     },
-    SubCatergory: {
+    SubCategory: {
       type: mongoose.Types.ObjectId,
-      ref: "subCategory",
+      ref: "SubCategory",
       required: [true, "subCategory id is required"],
     },
     slug: {
