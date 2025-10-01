@@ -9,7 +9,7 @@ export const createOrder = CatchError(async (req, res, next) => {
     const userId = req.user.id;
     const { shippingAddress } = req.body;
 
-    const cart = await Cart.findOne({ userId }).populate("items.productId", "price");
+    const cart = await Cart.findOne({ userId }).populate("items.productId", "price name");
     if (!cart || cart.items.length === 0) return next(new AppError("Cart is empty", 400));
 
     const items = cart.items.map(item => ({
@@ -20,7 +20,10 @@ export const createOrder = CatchError(async (req, res, next) => {
 
     const totalPrice = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-    const order = await Order.create({ userId, items, totalPrice, shippingAddress });
+    let order = await Order.create({ userId, items, totalPrice, shippingAddress });
+
+    // 🟢 populate user name & email
+    order = await order.populate("userId", "userName email");
 
     cart.items = [];
     await cart.save();
@@ -64,7 +67,10 @@ export const deleteAllUserOrders = CatchError(async (req, res) => {
 
 // admin
 export const getAllOrders = CatchError(async (req, res) => {
-    const orders = await Order.find().populate("userId", "name email").sort({ createdAt: -1 });
+    const orders = await Order.find()
+        .populate("userId", "userName email")  // 🟢 populate user info
+        .populate("items.productId", "name price") // optional populate products
+        .sort({ createdAt: -1 });
     res.json({ orders });
 });
 
