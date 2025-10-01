@@ -5,6 +5,10 @@ import { authuntcation,AllowTo } from "../../MiddleWare/auth.middleware.js";
 import adminMiddleware from "../../MiddleWare/adminMiddleware.js";
 const categoryRouter =express.Router()
 categoryRouter.use("/:CategoryId/subCategories",subcategoryRouter)
+
 categoryRouter.route("/").get( getCategories).post(addCategory)
+
+categoryRouter.route("/").get(getCategories).post(addCategory)
+
 categoryRouter.route("/:id").put( authuntcation, adminMiddleware,updateCetCategory).get( authuntcation, adminMiddleware,getCategoryByID).delete(authuntcation, adminMiddleware,deleteCategory)
 export default categoryRouter
