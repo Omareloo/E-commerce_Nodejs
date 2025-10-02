@@ -28,10 +28,7 @@ const getproducts = CatchError(async (req, res, next) => {
   ["sort", "page", "keyword", "fields"].forEach((item) => delete filter[item]);
 
   // build query
-  let query = poductModel.find(filter).skip(skip).limit(limit);
-
-  // sort
-  if (req.query.sort) query = query.sort(req.query.sort);
+  let query = poductModel.find(filter);
 
   // search by keyword
   if (req.query.keyword) {
@@ -43,23 +40,42 @@ const getproducts = CatchError(async (req, res, next) => {
     });
   }
 
+  // count documents before applying skip/limit
+  const total = await poductModel.countDocuments(query.getFilter());
+  const totalPages = Math.ceil(total / limit);
+
+  // sort
+  if (req.query.sort) query = query.sort(req.query.sort);
+
   // select fields
   if (req.query.fields) {
     let fields = req.query.fields.split(",").join(" ");
     query = query.select(fields);
   }
 
-  // populate الكاتجوري والساب كاتجوري باسمهم
+  // pagination
+  query = query.skip(skip).limit(limit);
+
+  // populate category & subcategory
   query = query
-    .populate("Category","name")      // هيرجع اسم الكاتجوري بدل null
-    .populate("SubCategory", "name");  // هيرجع اسم الساب كاتجوري بدل ObjectId
+    .populate("Category", "name")
+    .populate("SubCategory", "name");
 
   // execute query
   const results = await query;
-  if (results.length === 0) return next(new AppError("There are no products yet", 404));
+  if (results.length === 0)
+    return next(new AppError("There are no products yet", 404));
 
-  res.json({ message: "Success", page, limit, results });
+  res.json({
+    message: "Success",
+    page,
+    limit,
+    total,
+    totalPages,
+    results,
+  });
 });
+
 
 
 
