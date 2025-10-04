@@ -86,17 +86,32 @@ const getproductByID = CatchError(async (req, res, next) => {
   !results && next(new AppError("can not find product"));
   results && res.json({ message: "Success", results });
 });
+
+
 const updateCetproduct = CatchError(async (req, res, next) => {
+  const { id } = req.params;
+
   if (req.body.title) {
     req.body.slug = slugify(req.body.title);
   }
-  const { id } = req.params;
+
+  // لو فيه صورة جديدة
+  if (req.file) {
+    req.body.image = req.file.filename;
+  }
+
   const results = await poductModel.findByIdAndUpdate(id, req.body, {
     new: true,
-  });
-  !results && next(new AppError("can not find product"));
-  results && res.json({ message: "Success", results });
+  }).populate("Category", "name")
+    .populate("SubCategory", "name");
+
+  if (!results) return next(new AppError("can not find product"));
+
+  res.json({ message: "Success", result: results });
 });
+
+
+
 const deleteproduct = CatchError(async (req, res, next) => {
   const { id } = req.params;
   const results = await poductModel.findByIdAndDelete(id);
