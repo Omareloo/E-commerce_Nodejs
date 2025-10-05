@@ -13,8 +13,6 @@ const addproduct = CatchError(async (req, res, next) => {
   await result.save();
   res.status(201).json({ message: "Product added successfully", result });
 });
-
-
 const getproducts = CatchError(async (req, res, next) => {
   // pagination
   let page = req.query.page * 1 || 1;
