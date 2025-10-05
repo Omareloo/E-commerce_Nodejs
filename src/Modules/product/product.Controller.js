@@ -15,11 +15,10 @@ const addproduct = CatchError(async (req, res, next) => {
 });
 
 
-
 const getproducts = CatchError(async (req, res, next) => {
   // pagination
   let page = req.query.page * 1 || 1;
-  let limit = 5;
+  let limit = 10;
   if (req.query.page <= 0) page = 1;
   let skip = (page - 1) * limit;
 
